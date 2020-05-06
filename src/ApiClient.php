@@ -1082,6 +1082,45 @@ class ApiClient implements ApiInterface
     }
 
     /**
+     * send Viber data
+     *
+     * @param $viber
+     *
+     * @return stdClass
+     */
+    public function sendViber($viber)
+    {
+        if (empty($viber)) {
+            return $this->handleError('Empty email data');
+        }
+
+        $requestResult = $this->sendRequest('viber', 'POST', $viber);
+
+        return $this->handleResult($requestResult);
+    }
+
+    /**
+     * Get Sender ID from sender name
+     *
+     * @param name $name
+     *
+     * @return int or null
+     */
+    public function getSenderID($name)
+    {
+        $requestResult = $this->sendRequest('viber/senders', 'GET');
+
+        $res_arr = $this->handleResult($requestResult);
+
+        if(count($res_arr))
+            foreach ($res_arr as $item)
+                if($item->name == $name)
+                    return $item->id;
+
+        return null;
+    }
+
+    /**
      * Get list of push campaigns
      *
      * @param null $limit
@@ -1593,4 +1632,7 @@ class ApiClient implements ApiInterface
 
         return $this->handleResult($requestResult);
     }
+
+
+
 }
